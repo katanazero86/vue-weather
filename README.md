@@ -39,6 +39,7 @@ Incheon, KR
 
 Current weather data
 참고 : https://openweathermap.org/current
+참고2 : https://openweathermap.org/weather-data
 
 How to use API key in API call
 Description:
@@ -74,6 +75,17 @@ http://api.openweathermap.org/data/2.5/weather?q=Incheon,kr&appid=
 - npm i --save vuex
 - store.js 파일 작성
 - vuex 를 사용가능하게 등록해주자.
+
+## vue-icon 및 vuetify 설치
+
+- vue CSS 프레임워크 및 UI를 위해 설치.
+- npm i --save vuetify vue-icon
+
+```
+icon list
+https://qinshenxue.github.io/vue-icon/
+
+```
 
 ```
 import Vue from 'vue'
