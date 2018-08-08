@@ -140,6 +140,13 @@ https://devcenter.heroku.com/articles/heroku-cli
 vue-weather-web-app 이름으로 생성.
 https://<YOUR-PROJECT-NAME-HERE>.herokuapp.com
 
+heroku login
+heroku config:set NODE_ENV=production --app <YOUR-PROJECT-NAME-HERE>
+heroku git:remote --app <YOUR-PROJECT-NAME-HERE>
+
+
+
+
 
 
 ```
