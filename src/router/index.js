@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Weather from '@/components/Weather'
+import Intro from '@/components/Intro'
 
 Vue.use(Router)
 
@@ -10,6 +11,11 @@ export default new Router({
       path: '/',
       name: 'Weather',
       component: Weather
+    },
+    {
+      path: '/intro',
+      name: 'Intro',
+      component: Intro
     }
   ]
 })

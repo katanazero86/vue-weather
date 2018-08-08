@@ -1,23 +1,33 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <v-app dark>
+      <v-toolbar>
+        <v-toolbar-title>{{getTitle}}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items class="hidden-sm-and-down">
+          <v-btn flat><router-link to="/">Home</router-link></v-btn>
+          <v-btn flat><router-link to="/intro">Intro</router-link></v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <router-view/>
+    </v-app>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+    getTitle: function () {
+      return this.$store.getters.getTitle
+    }
+  }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped>
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
 </style>

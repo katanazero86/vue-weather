@@ -29,6 +29,37 @@ vue list
 
 ![api result](./img/api.PNG)
 
+```
+api call
+
+api.openweathermap.org/data/2.5/weather?q={city name},{country code}
+예) api.openweathermap.org/data/2.5/weather?q=London,uk
+
+Incheon, KR
+
+Current weather data
+참고 : https://openweathermap.org/current
+
+How to use API key in API call
+Description:
+To get access to weather API you need an API key whatever account you chose from Free to Enterprise.
+
+Activation of an API key for Free and Startup plans takes 10 minutes. For other tariff plans it is 10 to 60 minutes.
+
+We keep right to not to process API requests without API key.
+
+API call:
+http://api.openweathermap.org/data/2.5/forecast?id=524901&APPID={APIKEY}
+Parameters:
+APPID {APIKEY} is your unique API key 
+Example of API call:
+api.openweathermap.org/data/2.5/forecast?id=524901&APPID=1111111111 
+
+
+My endpoint
+http://api.openweathermap.org/data/2.5/weather?q=Incheon,kr&appid=
+
+```
 
 ## axios 설치
 
@@ -36,6 +67,33 @@ vue list
 - vue-resource 도 있지만, 왜 사용안할까? 에번 유가 공식적으로 추천하지 않는 프로젝트 + 업데이트가 되지 않고 있음.
 - npm i --save axios
 - main.js 를 열어 axios를 추가하고  vue 전역으로 사용할 수 있도록 해주자
+
+## vuex 설치
+
+- Vue 상태 관리를 위해 설치.
+- npm i --save vuex
+- store.js 파일 작성
+- vuex 를 사용가능하게 등록해주자.
+
+```
+import Vue from 'vue'
+import App from './App'
+import router from './router'
+import axios from 'axios'
+import store from './store'
+
+Vue.use(axios)
+
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router, store,
+  components: { App },
+  template: '<App/>'
+})
+```
 
 ---
 
