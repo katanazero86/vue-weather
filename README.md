@@ -107,6 +107,43 @@ new Vue({
 })
 ```
 
+## 빌드 및 배포
+
+```
+- 노드 express 서버 생성
+npm install --save-dev express serve-static
+
+- server.js 작성
+const express = require('express');
+const serveStatic = require("serve-static")
+const path = require('path');
+app = express();
+app.use(serveStatic(path.join(__dirname, 'dist')));
+const port = process.env.PORT || 80;
+app.listen(port);
+
+
+- heroku 를 이용.
+https://medium.com/netscape/deploying-a-vue-js-2-x-app-to-heroku-in-5-steps-tutorial-a69845ace489
+
+
+https://www.heroku.com/ 
+1. 가입하여, heroku app 생성해야함.
+헤로쿠의 가입은 무료이며, 유료로 전환이 가능합니다. 현재 무료 버전의 제약은 크게 2가지입니다.
+30분간 방문이 없는 경우 사이트를 sleep시킵니다. 사이트가 sleep된 상태에서 페이지 요청이 들어오는 경우 사이트가 다시 깨어나지만 10~30 정도 시간이 걸립니다.
+한 계정당 한달의 550시간만 사용가능합니다. 단 계정에 신용카드 등록을 하는 경우 1000시간 사용가능합니다.한달은 최대 744시간이므로 신용카드 등록을 한다면 하나의 사이트를 한달 내내 돌려도 시간 한도를 넘어가지 않습니다. 사이트가 여러개라서 시간이 초과되면 사이트에 더이상 접속할 수 없습니다.
+두가지 제약이 있지만 연습용, 발표용, 포트폴리오용으로는  무료버전도 충분
+
+2. heroku CLI 다운로드 또는 웹 콘솔로 작업해도 된다.
+https://devcenter.heroku.com/articles/heroku-cli
+
+vue-weather-web-app 이름으로 생성.
+https://<YOUR-PROJECT-NAME-HERE>.herokuapp.com
+
+
+
+```
+
 ---
 
 ## vue-weather-app
