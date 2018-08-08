@@ -12,7 +12,8 @@
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
     "build": "node build/build.js",
-    "local": "npm run dev"
+    "local": "npm run dev",
+    "postinstall": "npm install express"
   },
   "dependencies": {
     "axios": "^0.18.0",
