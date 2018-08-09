@@ -74,14 +74,6 @@ export default {
   },
   methods: {
     getWeatherInfoAxios: function () {
-      // this.$http
-      //   .get('http://api.openweathermap.org/data/2.5/weather?q=Incheon,kr&appid=' + this.$store.getters.getApiId)
-      //   .then(function (response) {
-      //     console.log(response)
-      //   }).catch(function (ex) {
-      //     console.log(ex)
-      //   })
-
       const endPoint = 'http://api.openweathermap.org/data/2.5/weather'
 
       axios({
@@ -144,7 +136,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .v-icon, .custom-icon {
     width: 100%;
