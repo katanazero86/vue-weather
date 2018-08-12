@@ -34,8 +34,11 @@
           </v-card-title>
           <v-card-actions>
             <v-card-actions>
-              <v-btn flat round large :loading="loading" :disabled="loading" color="info" @click.native="loader='loading'">
-                <v-icon>cached</v-icon> 선택된 도시 날씨 정보 새로고침
+              <v-btn round small dark :loading="loading" :disabled="loading" color="info" @click.native="loader='loading'">
+                <v-icon>cached</v-icon> 현재 도시 날씨 정보 갱신
+              </v-btn>
+              <v-btn round small dark color="indigo" :loading="gpsLoading" :disabled="gpsLoading" @click.native="loader='gpsLoading'">
+                <v-icon>check_circle</v-icon> 내 위치 날씨
               </v-btn>
             </v-card-actions>
           </v-card-actions>
@@ -59,10 +62,13 @@ export default {
     return {
       loader: null,
       loading: false,
+      gpsLoading: false,
       msg: 'Welcome to Your Vue.js Weather App',
       updateTime: '',
       selectedCity: 'Seoul',
       cityList: [],
+      latitude: '', // 위도
+      longitude: '', // 경도
       currentWeatherInfo: {
         coord: {lon: '', lat: ''},
         weather: [{}],
@@ -88,12 +94,13 @@ export default {
   },
   methods: {
     getWeatherInfoAxios: function () {
-      console.log('axios get Current Weather..')
       const endPoint = 'https://api.openweathermap.org/data/2.5/weather'
 
       axios({
         url: endPoint,
         method: 'get',
+        responseType: 'json',
+        responseEncoding: 'utf8',
         params: {
           q: this.selectedCity + ',kr',
           appid: this.$store.getters.getApiId
@@ -112,9 +119,16 @@ export default {
 
         // 현재 날씨 icon
         this.getIcon(this.$store.getters.getCurrentWeather.weather[0].main)
+
+        // 위도, 경도 값 초기화
+        this.latitude = ''
+        this.longitude = ''
+
+        this.loading = false
       }).catch((ex) => {
         console.log(ex)
         alert('날씨정보를 불러오는데, 실패하였습니다. 관리자에게 문의해주세요.')
+        this.loading = false
       })
     },
     getIcon: function (weatherName) {
@@ -143,21 +157,84 @@ export default {
         default:
           this.iconName = 'alert-octagon'
       }
+    },
+    getWeatherInfoAxiosByGPS: function () {
+      if (navigator.geolocation) { // GPS를 지원하면
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.latitude = position.coords.latitude
+          this.longitude = position.coords.longitude
+          console.log('위도 : ' + this.latitude)
+          console.log('위도 : ' + this.longitude)
+
+          if (this.latitude !== '' && this.longitude !== '') {
+            const endPoint = 'https://api.openweathermap.org/data/2.5/weather'
+
+            axios({
+              url: endPoint,
+              method: 'get',
+              responseType: 'json',
+              responseEncoding: 'utf8',
+              params: {
+                lat: this.latitude,
+                lon: this.longitude,
+                appid: this.$store.getters.getApiId
+              }
+            }).then((response) => {
+              console.log(response.data)
+              this.$store.commit('updateCurrentWeather', response.data)
+              this.currentWeatherInfo = this.$store.getters.getCurrentWeather
+
+              // 기온 단위 변환(현재, 최저, 최고)
+              this.currentWeatherInfo.main.temp = (this.$store.getters.getCurrentWeather.main.temp - 273.15).toFixed()
+              this.currentWeatherInfo.main.temp_min = (this.$store.getters.getCurrentWeather.main.temp_min - 273.15).toFixed()
+              this.currentWeatherInfo.main.temp_max = (this.$store.getters.getCurrentWeather.main.temp_max - 273.15).toFixed()
+
+              this.updateTime = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+
+              // 현재 날씨 icon
+              this.getIcon(this.$store.getters.getCurrentWeather.weather[0].main)
+              this.selectedCity = response.data.name
+            }).catch((ex) => {
+              console.log(ex)
+              alert('날씨정보를 불러오는데, 실패하였습니다. 관리자에게 문의해주세요.')
+            })
+          }
+          this.gpsLoading = false
+        }, function (error) {
+          console.error(error)
+          alert('GPS정보를 가지고 올 수 없습니다.')
+          this.gpsLoading = false
+        }, {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: Infinity
+        })
+      } else {
+        alert('GPS를 지원하지 않습니다')
+        this.gpsLoading = false
+      }
     }
   },
   watch: {
     loader () {
       const l = this.loader // click 하면, 'loading' 문자열이 loader에 들어감(네이티브 바인딩)
       this[l] = !this[l] // this.loading = !this.loading  false 면 true로..
-      setTimeout(() => { this[l] = false }, 950)
+      // setTimeout(() => { this[l] = false }, 1000)
 
-      if (this.loader != null) {
+      if (this.loader != null && l === 'loading') {
+        console.log('새로고침')
         this.getWeatherInfoAxios()
+      }
+      if (this.loader != null && l === 'gpsLoading') {
+        console.log('내 위치')
+        this.getWeatherInfoAxiosByGPS()
       }
       this.loader = null
     },
     selectedCity () {
-      this.getWeatherInfoAxios()
+      if (this.latitude === '' && this.longitude === '') {
+        this.getWeatherInfoAxios()
+      }
     }
   }
 }

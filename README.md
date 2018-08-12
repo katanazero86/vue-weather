@@ -79,12 +79,23 @@ param : lat / lon / appid
 - store.js 파일 작성
 - vuex 를 사용가능하게 등록해주자.
 
-## vue-icon 및 vuetify 설치
+## vue-icon 및 vuetify, material-design-icons-iconfont 설치
 
 - vue CSS 프레임워크 및 UI를 위해 설치.
-- npm i --save vuetify vue-icon
+- npm i --save vuetify vue-icon material-design-icons-iconfont
 
 ```
+적용
+main.js
+
+import 'vuetify/dist/vuetify.min.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import feather from 'vue-icon'
+
+Vue.use(feather, 'v-icon')
+Vue.use(Vuetify)
+
+
 icon list
 https://qinshenxue.github.io/vue-icon/
 
