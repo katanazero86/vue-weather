@@ -4,9 +4,11 @@
       <v-toolbar>
         <v-toolbar-title>{{getTitle}}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-toolbar-items class="hidden-sm-and-down">
-          <v-btn flat><router-link to="/">Home</router-link></v-btn>
-          <v-btn flat><router-link to="/intro">Intro</router-link></v-btn>
+        <v-toolbar-items>
+          <!--<v-btn flat><router-link to="/" flat>Home</router-link></v-btn>-->
+          <!--<v-btn flat><router-link to="/intro" flat>Intro</router-link></v-btn>-->
+          <v-btn flat active-class to="/">Home</v-btn>
+          <v-btn flat active-class to="/intro">Intro</v-btn>
         </v-toolbar-items>
       </v-toolbar>
       <router-view/>

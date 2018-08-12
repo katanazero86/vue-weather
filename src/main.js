@@ -8,7 +8,10 @@ import store from './store'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import feather from 'vue-icon'
+import moment from 'moment'
+import vueMoment from 'vue-momentjs'
 
+Vue.use(vueMoment, moment)
 Vue.use(feather, 'v-icon')
 Vue.use(Vuetify)
 

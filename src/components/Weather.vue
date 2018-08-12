@@ -1,23 +1,28 @@
 <template>
-  <div style="padding: 10px; background: linear-gradient(141deg, #303030 0%, #373a5b 51%, #424aa3 75%);">
-    <v-layout my-3>
-      <v-flex xs12>
+  <div style="padding: 10px; background: linear-gradient(141deg, #303030 0%, #373a5b 51%, #424aa3 75%); height: 100%">
+    <v-layout my-3 row warp>
+      <v-flex xs10 offset-xs1>
         <v-card dark color="primary">
           <v-card-text class="px-0 text-xs-center">{{msg}}</v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
-    <v-layout>
-      <v-flex xs12 sm6 offset-sm3>
-        <v-card>
+    <v-layout my-3 row warp justify-center>
+      <v-flex xs10>
+        <v-select :items="cityList" label="도시 선택(City Select)" v-model="selectedCity"></v-select>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap justify-center>
+      <v-flex xs10>
+        <v-card dark>
           <v-card-media height="180px">
             <custom-icon v-bind:name="iconName" base-class="custom-icon"></custom-icon>
           </v-card-media>
           <v-card-title primary-title>
             <div>
-              <h3 class="headline mb-0">Weather in Incheon, KR</h3>
+              <h3 class="headline mb-0">Weather in {{selectedCity}}, KR</h3>
               <div>
-                <p>갱신 시간 : {{currentWeatherInfo.dt}}</p>
+                <p>갱신 시간 : {{updateTime}}</p>
                 <p>현재 날씨 : {{currentWeatherInfo.weather[0].main}}</p>
                 <p>현재 기온 : {{currentWeatherInfo.main.temp}}</p>
                 <p>최저 기온 : {{currentWeatherInfo.main.temp_min}} / 최고 기온 : {{currentWeatherInfo.main.temp_max}}</p>
@@ -27,11 +32,12 @@
               </div>
             </div>
           </v-card-title>
-
           <v-card-actions>
-            <v-btn flat icon color="pink" @click="getWeatherInfoAxios">
-              <v-icon>cached</v-icon>
-            </v-btn>
+            <v-card-actions>
+              <v-btn flat round large :loading="loading" :disabled="loading" color="info" @click.native="loader='loading'">
+                <v-icon>cached</v-icon> 선택된 도시 날씨 정보 새로고침
+              </v-btn>
+            </v-card-actions>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -40,6 +46,7 @@
 </template>
 
 <script>
+import weatherConst from './WEATHER_CONST'
 import axios from 'axios'
 import customIcon from 'vue-icon/lib/vue-feather.esm'
 
@@ -50,7 +57,12 @@ export default {
   },
   data () {
     return {
+      loader: null,
+      loading: false,
       msg: 'Welcome to Your Vue.js Weather App',
+      updateTime: '',
+      selectedCity: 'Seoul',
+      cityList: [],
       currentWeatherInfo: {
         coord: {lon: '', lat: ''},
         weather: [{}],
@@ -68,19 +80,22 @@ export default {
       iconName: 'alert-octagon'
     }
   },
+  created: function () {
+    this.cityList = weatherConst.cityList
+  },
   mounted: function () {
-    console.log('axios get Current Weather')
     this.getWeatherInfoAxios()
   },
   methods: {
     getWeatherInfoAxios: function () {
-      const endPoint = 'http://api.openweathermap.org/data/2.5/weather'
+      console.log('axios get Current Weather..')
+      const endPoint = 'https://api.openweathermap.org/data/2.5/weather'
 
       axios({
         url: endPoint,
         method: 'get',
         params: {
-          q: 'Incheon,kr',
+          q: this.selectedCity + ',kr',
           appid: this.$store.getters.getApiId
         }
       }).then((response) => {
@@ -93,19 +108,16 @@ export default {
         this.currentWeatherInfo.main.temp_min = (this.$store.getters.getCurrentWeather.main.temp_min - 273.15).toFixed()
         this.currentWeatherInfo.main.temp_max = (this.$store.getters.getCurrentWeather.main.temp_max - 273.15).toFixed()
 
-        // dt 시간 변환
-        let date = new Date(this.$store.getters.getCurrentWeather.dt * 1000)
-        this.currentWeatherInfo.dt = date.toLocaleString()
+        this.updateTime = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 
         // 현재 날씨 icon
         this.getIcon(this.$store.getters.getCurrentWeather.weather[0].main)
       }).catch((ex) => {
         console.log(ex)
+        alert('날씨정보를 불러오는데, 실패하였습니다. 관리자에게 문의해주세요.')
       })
     },
     getIcon: function (weatherName) {
-      console.log(weatherName)
-
       switch (weatherName) {
         case 'Thunderstorm' :
           this.iconName = 'cloud-lightning'
@@ -131,6 +143,22 @@ export default {
         default:
           this.iconName = 'alert-octagon'
       }
+    }
+  },
+  watch: {
+    loader () {
+      console.log(this.selectedCity)
+      const l = this.loader // click 하면, 'loading' 문자열이 loader에 들어감(네이티브 바인딩)
+      this[l] = !this[l] // this.loading = !this.loading  false 면 true로..
+      setTimeout(() => { this[l] = false }, 950)
+
+      if (this.loader != null) {
+        this.getWeatherInfoAxios()
+      }
+      this.loader = null
+    },
+    selectedCity () {
+      this.getWeatherInfoAxios()
     }
   }
 }
