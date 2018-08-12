@@ -147,7 +147,6 @@ export default {
   },
   watch: {
     loader () {
-      console.log(this.selectedCity)
       const l = this.loader // click 하면, 'loading' 문자열이 loader에 들어감(네이티브 바인딩)
       this[l] = !this[l] // this.loading = !this.loading  false 면 true로..
       setTimeout(() => { this[l] = false }, 950)
