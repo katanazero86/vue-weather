@@ -56,9 +56,12 @@ APPID {APIKEY} is your unique API key
 Example of API call:
 api.openweathermap.org/data/2.5/forecast?id=524901&APPID=1111111111 
 
-
 My endpoint
-http://api.openweathermap.org/data/2.5/weather?q=Incheon,kr&appid=
+- http://api.openweathermap.org/data/2.5/weather?q=Incheon,kr&appid=
+param : q / appid
+
+- http://api.openweathermap.org/data/2.5/weather?lat=&lon=&appid=
+param : lat / lon / appid
 
 ```
 
@@ -107,24 +110,42 @@ new Vue({
 })
 ```
 
+
+## moment 및 vue-moment-js 설치
+
+- JS 에서 유명한, DATE 라이브러리 moment.js 설치
+- moment.js 는 DATE 형식 / 날짜 계산 등을 간편하게 할 수 있도록 해줌.
+- npm i --save moment
+- npm i --save vue-moment-js
+
+```
+적용
+main.js
+
+import moment from 'moment'
+import vueMoment from 'vue-momentjs'
+
+Vue.use(vueMoment, moment)
+
+사용
+this.$moment()
+
+다양한 사용방법
+참조 : https://momentjs.com/ 
+
+```
+
 ## 빌드 및 배포
 
 ```
-- 노드 express 서버 생성
-npm install --save-dev express serve-static
+- Heroku ?
+헤로쿠는 웹 애플리케이션 배치 모델로 사용되는 여러 프로그래밍 언어를 지원하는 클라우드 PaaS이다. 
+최초의 클라우드 플랫폼들 가운데 하나인 헤로쿠는 2007년 6월 개발이 시작되었고 당시에는 루비 프로그래밍 언어만 지원하였으나 
+지금은 자바, Node.js, 스칼라, 클로저, 파이썬, PHP, 고를 지원한다.
+PaaS(Platform as a Service) : 기호에 맞춰 SW 개발 돕는, 개발자를 위한 서비스
 
-- server.js 작성
-const express = require('express');
-const serveStatic = require("serve-static")
-const path = require('path');
-app = express();
-app.use(serveStatic(path.join(__dirname, 'dist')));
-const port = process.env.PORT || 80;
-app.listen(port);
-
-
-- heroku 를 이용.
-https://medium.com/netscape/deploying-a-vue-js-2-x-app-to-heroku-in-5-steps-tutorial-a69845ace489
+- Heroku 를 이용.
+참조 : https://medium.com/netscape/deploying-a-vue-js-2-x-app-to-heroku-in-5-steps-tutorial-a69845ace489
 
 
 https://www.heroku.com/ 
@@ -145,9 +166,54 @@ heroku config:set NODE_ENV=production --app <YOUR-PROJECT-NAME-HERE>
 heroku git:remote --app <YOUR-PROJECT-NAME-HERE>
 
 
+3. 노드 express 서버 생성(server.js 작성)
+npm install --save-dev express serve-static
 
+- server.js 작성
+const express = require('express');
+const serveStatic = require("serve-static");
+const history = require('connect-history-api-fallback');
+const path = require('path');
 
+const app = express();
+app.use(history());
+app.use(serveStatic(__dirname + "/dist"));
 
+const port = process.env.PORT || 5000;
+app.listen(port, function () {
+  console.log('server started '+ port)
+});
+
+4. npm run build
+- build를 하면, dist 폴더에 결과물을 생성
+
+5. node server.js 
+- 익스프레스를 실행시켜서, 빌드한 결과물이 로컬에서 정상적으로 동작하는지 확인
+
+6. package.json 에 scripts 추가
+"start": "node server.js"
+-> Heroku는 node.js 앱을 실행하는 방법을 찾을 때이 스크립트를 자동으로 찾습니다.
+
+7. git 관련 설정
+- Add Your Heroku Remote Repository
+heroku git:remote --app <YOUR-PROJECT-NAME-HERE>
+
+.gitigore 파일에서
+dist/  
+위 내용을 삭제해 주자.
+
+git add . && git commit -a -m "Adding files."
+
+8. push & deploy
+git push heroku master
+
+- 만약 안되면, 나같은 경우 툴에서 강제 푸쉬해서 밀어넣었다.
+
+이것은 우리의 커밋 된 코드를 취하여 Heroku의 원격 저장소로 보내고
+start 명령을 실행(pacakage.json에 작성한)
+그리고, 빌드된 dist 폴더를 express 서버에 올라갑니다.
+문제가 생기면 언제든지 heroku logs 를 해결할 수 있습니다 .
+배포가 성공적이면 프로젝트의 URL을 테스트 https://<YOUR-PROJECT-NAME-HERE>.herokuapp.com 하면 완료됩니다.
 
 ```
 
