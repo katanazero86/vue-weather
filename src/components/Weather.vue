@@ -63,7 +63,7 @@ export default {
       loader: null,
       loading: false,
       gpsLoading: false,
-      msg: 'Welcome to Your Vue.js Weather App',
+      msg: 'Welcome to My Vue.js Weather App',
       updateTime: '',
       selectedCity: 'Seoul',
       cityList: [],
