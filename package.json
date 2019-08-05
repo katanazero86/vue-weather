@@ -1,9 +1,8 @@
 {
-  "name": "vue-weather-app",
+  "name": "vue-weather",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "phpbae <z1004man@naver.com>",
-  "private": true,
+  "author": "kyle",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "node server.js",
